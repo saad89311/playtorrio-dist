@@ -1,129 +1,115 @@
-# PlayTorrio — iOS Test Builds
+# PlayTorrio for iPhone
 
-Ad Hoc distribution of the PlayTorrio iOS app for registered test devices.
+This page is for installing the PlayTorrio test app on an iPhone.
 
-**Current version:** 1.1.4 (build 15)
-**Requires:** iPhone running iOS 14.0 or later
-**Install page:** https://saad89311.github.io/playtorrio-dist/
+**Install link:** https://saad89311.github.io/playtorrio-dist/
 
 ---
 
-## For testers — how to install
+## Before you start
 
-> **Your device must be registered first.** This build only installs on iPhones whose UDID was added to the signing profile. If you have not sent your UDID to the developer, the download will start and then fail. See [Getting your UDID](#getting-your-udid) below.
+**Your iPhone must be added to the list first.**
 
-1. Open **https://saad89311.github.io/playtorrio-dist/** in **Safari**.
+This is a test app, not an App Store app. It only works on iPhones that the developer has added. If your phone was not added, the app will start downloading and then stop with an error.
 
-   If the link arrived over WhatsApp, Telegram or another app, tap the share icon and choose **Open in Safari** first. The install button does not work inside in-app browsers.
+If you are not sure, ask the developer before trying.
 
-2. Tap **Install**, then confirm on the popup.
+You also need:
 
-3. Wait for the app icon to finish downloading on your Home Screen. Stay on Wi-Fi or mobile data — the app checks in with Apple on first launch.
-
-4. Go to **Settings → General → VPN & Device Management**.
-
-5. Under *Developer App*, tap **Muhammad Saad Khan**, then tap **Trust** and confirm.
-
-6. Open the app from the Home Screen.
+- An iPhone with **iOS 14 or newer**
+- **Internet** while installing, and when you open the app the first time
 
 ---
 
-## Getting your UDID
+## How to install
 
-The UDID is a unique identifier for your iPhone. It is not your serial number and not your phone number.
+### Step 1 — Open the link in Safari
 
-**With a Mac:**
+Open the install link in **Safari**.
 
-1. Connect the iPhone by cable, unlock it, tap **Trust** if asked.
-2. Open **Finder** — the iPhone appears in the left sidebar under *Locations*.
-3. Click it. Under the device name there is a grey line showing the model and storage.
-4. **Click that line repeatedly** — it cycles through model, serial number, then **Identifier (UDID)**.
-5. Right-click → **Copy**, and send it to the developer.
+This part is important. If you got the link on WhatsApp, Telegram, Instagram or Messenger, do **not** just tap it and stay there. Those apps open links inside their own small browser, and the install will not work there.
 
-The UDID looks like `00008020-000C1D311441002E`.
+Do this instead:
 
----
+1. Tap the link
+2. Look for the **share icon**, or the **three dots**, in the corner of the screen
+3. Choose **Open in Safari**
 
-## Troubleshooting
+### Step 2 — Tap Install
 
-| What you see | What it means |
-|---|---|
-| Nothing happens when you tap Install | You are not in Safari. Open the page in Safari and try again. |
-| "Unable to install" | Your device is not in the signing profile. Send your UDID to the developer. |
-| Icon appears greyed out and stops | The download was interrupted. Delete the icon, then tap Install again. |
-| App installs but will not open | You skipped step 5. Go to Settings and trust the developer. |
-| "Untrusted Enterprise Developer" | Same as above — trust the developer in Settings. |
-| App stops working after some time | The signing profile expired. Ask the developer for a new build. |
+You will see a blue **Install** button. Tap it.
 
----
+A small box will pop up and ask if you want to install the app. Tap **Install** again.
 
-## For the maintainer — publishing a new build
+### Step 3 — Wait
 
-### Adding a device
+Close Safari and go to your Home Screen. You will see the app icon appear, greyed out, with a circle slowly filling around it.
 
-1. **[developer.apple.com](https://developer.apple.com/account/resources/devices/list) → Devices → +** — register each new UDID.
-2. **Profiles → PlayTorrio AdHoc → Edit** — tick every device that should be included → **Save** → **Download**.
+Wait until the icon looks normal. This takes a minute or two. Keep your internet on.
 
-Tick all devices at once rather than repeating this per person. The account allows 100 devices per membership year.
+### Step 4 — Trust the developer
 
-### Re-signing
+If you open the app right now, you will get a message saying the developer is not trusted. This is normal for test apps. Here is how to fix it:
 
-Requires the unpacked app in `~/Downloads/work/` and the downloaded profile in `~/Downloads/`.
+1. Open **Settings**
+2. Tap **General**
+3. Scroll down and tap **VPN & Device Management**
+4. Under **Developer App**, you will see a name. Tap it.
+5. Tap **Trust**, then tap **Trust** again to confirm
 
-```bash
-cd ~/Downloads/work
-APP=$(ls -d Payload/*.app)
-IDENTITY="Apple Distribution: Muhammad Saad Khan (858793HM6U)"
+### Step 5 — Open the app
 
-cp ~/Downloads/PlayTorrio_AdHoc.mobileprovision "$APP/embedded.mobileprovision"
-security cms -D -i "$APP/embedded.mobileprovision" > profile.plist
-/usr/libexec/PlistBuddy -x -c 'Print :Entitlements' profile.plist > ent.plist
-
-for f in "$APP"/Frameworks/*.framework; do
-  rm -rf "$f/_CodeSignature"
-  codesign -f -s "$IDENTITY" --timestamp=none "$f"
-done
-
-codesign -f -s "$IDENTITY" --timestamp=none --entitlements ent.plist "$APP"
-codesign --verify --deep --strict "$APP" && echo "signature OK"
-
-rm -f ~/Downloads/PlayTorrio-signed.ipa
-zip -qry ~/Downloads/PlayTorrio-signed.ipa Payload
-```
-
-Note: `zip -y` preserves the symlinks inside the frameworks. Without it the build will not install.
-
-### Publishing
-
-1. **Releases → Draft a new release** — new tag (e.g. `v1.1.4-2`), attach `PlayTorrio-signed.ipa`, publish.
-2. Edit `manifest.plist` in this repo and update the tag in the asset URL to match.
-3. Update the version shown in `index.html` if it changed.
-
-### Verifying
-
-```bash
-curl -sI https://saad89311.github.io/playtorrio-dist/manifest.plist | head -1
-curl -sIL https://github.com/saad89311/playtorrio-dist/releases/download/v1.1.4/PlayTorrio-signed.ipa | grep -E "^HTTP|content-length"
-```
-
-Both must return `200`. Both URLs must be HTTPS — `itms-services` fails silently over plain HTTP.
+Go back to your Home Screen and tap the app icon. It will open now.
 
 ---
 
-## Repository contents
+## If something goes wrong
 
-| File | Purpose |
-|---|---|
-| `index.html` | Install landing page served by GitHub Pages |
-| `manifest.plist` | iOS install manifest pointing at the release asset |
-| `README.md` | This file |
+**I tapped Install and nothing happened.**
+You are not in Safari. Go back and open the link in Safari, then try again.
 
-The `.ipa` itself is attached to a [Release](../../releases), not committed to the repository.
+**It says "Unable to Install".**
+Your iPhone is not on the list. Send your UDID to the developer (see below) and wait for a new link.
+
+**The icon is stuck and stays greyed out.**
+Your internet dropped while downloading. Press and hold the icon, delete the app, then tap Install again.
+
+**The app installed but will not open.**
+You missed Step 4. Go to Settings and trust the developer.
+
+**It says "Untrusted Enterprise Developer".**
+Same thing — Step 4.
+
+**The app worked before, but now it will not open.**
+The test build has expired. Ask the developer for a new link.
+
+---
+
+## How to find your UDID
+
+The UDID is a long code that identifies your iPhone. The developer needs it to add your phone to the list.
+
+It is **not** your phone number, and **not** your serial number.
+
+**If you have a Mac:**
+
+1. Connect the iPhone to the Mac with a cable
+2. Unlock the iPhone and tap **Trust** if it asks
+3. Open **Finder** — your iPhone will show in the list on the left side
+4. Click on your iPhone
+5. Under the name of your phone there is a small grey line of text
+6. **Click that grey line again and again** — the text changes every time you click. Keep clicking until it says **Identifier (UDID)**
+7. Right-click on it and choose **Copy**
+8. Paste it into a message and send it to the developer
+
+It looks something like this: `00008020-000C1D311441002E`
+
+**If you do not have a Mac:** tell the developer, they can help you another way.
 
 ---
 
 ## Notes
 
-- This is an **Ad Hoc** build, not an App Store or TestFlight release. It is intended for named test devices only.
-- The signing profile expires **9 September 2027**. Builds stop launching after that and must be re-signed.
-- If the distribution certificate is revoked or the developer membership lapses, already-installed copies will stop opening.
+- This is a test build shared with a small number of people. It is not on the App Store.
+- Only iPhones added by the developer can install it.
+- The app will stop working after some time, and will need a new link.
